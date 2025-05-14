@@ -351,8 +351,6 @@ class SketchCanvas extends React.Component<SketchCanvasProps, CanvasState> {
               this.props.onCanvasReady?.();
             }}
             localSourceImage={this.props.localSourceImage}
-            permissionDialogTitle={this.props.permissionDialogTitle}
-            permissionDialogMessage={this.props.permissionDialogMessage}
             text={this.getProcessedText(this.props.text)}
           />
         </GestureDetector>
