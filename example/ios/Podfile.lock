@@ -1509,7 +1509,28 @@ PODS:
     - React-logger (= 0.76.7)
     - React-perflogger (= 0.76.7)
     - React-utils (= 0.76.7)
-  - RNSketchCanvas (2.0.0):
+  - RNGestureHandler (2.25.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - RNSketchCanvas (2.1.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1598,6 +1619,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNSketchCanvas (from `../..`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -1731,6 +1753,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
   RNSketchCanvas:
     :path: "../.."
   Yoga:
@@ -1799,9 +1823,10 @@ SPEC CHECKSUMS:
   React-utils: 0342746d2cf989cf5e0d1b84c98cfa152edbdf3f
   ReactCodegen: e1c019dc68733dd2c5d3b263b4a6dc72002c0045
   ReactCommon: 81e0744ee33adfd6d586141b927024f488bc49ea
-  RNSketchCanvas: 1e5e292e6eae9ef80bb14dc20fc6ebcb6101be79
+  RNGestureHandler: 8dab066435239ff9f56934a2dae9080734cfec2b
+  RNSketchCanvas: 83ba683df2b5448d9cdf2b9d1fa3a9a95aa35e46
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  Yoga: 88e46d0f2096eb9762a82c2c45ab23b0880de97d
+  Yoga: 90d80701b27946c4b23461c00a7207f300a6ff71
 
 PODFILE CHECKSUM: 97447e8703fdbbe9d0d1aea1d925c167e2f0a267
 

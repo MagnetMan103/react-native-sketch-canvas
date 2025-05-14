@@ -199,5 +199,8 @@
     "languages": "kotlin-objc",
     "type": "view-new",
     "version": "0.44.3"
+  },
+  "dependencies": {
+    "react-native-gesture-handler": "^2.25.0"
   }
 }
