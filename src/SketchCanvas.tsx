@@ -170,7 +170,9 @@ class SketchCanvas extends React.Component<SketchCanvasProps, CanvasState> {
         if (this.ref.current) {
           Commands.endPath(this.ref.current);
         }
-      });
+      })
+      .minDistance(1)
+      .runOnJS(true);
   }
 
   _processText(text: any) {
