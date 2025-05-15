@@ -15,7 +15,8 @@ import {
 
 import RNSketchCanvas, {
   SketchCanvas,
-} from '@sourcetoad/react-native-sketch-canvas';
+} from '@magnetman103/react-native-sketch-canvas';
+import {SketchContainer} from "@magnetman103/react-native-sketch-canvas"
 
 type ExampleState = {
   example: number;
@@ -360,122 +361,7 @@ export default class example extends Component<any, ExampleState> {
 
         {this.state.example === 2 && (
           <View style={{ flex: 1, flexDirection: 'row' }}>
-            <View style={{ flex: 1, flexDirection: 'column' }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.functionButton}
-                  onPress={() => {
-                    this.setState({ example: 0 });
-                  }}
-                >
-                  <Text style={{ color: 'white' }}>Close</Text>
-                </TouchableOpacity>
-                <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity
-                    style={styles.functionButton}
-                    onPress={() => {
-                      this.setState({ thickness: 10 });
-                    }}
-                  >
-                    <Text style={{ color: 'white' }}>Thick</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.functionButton}
-                    onPress={() => {
-                      this.setState({ thickness: 5 });
-                    }}
-                  >
-                    <Text style={{ color: 'white' }}>Thin</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <SketchCanvas
-                localSourceImage={{
-                  filename: 'whale.png',
-                  directory: SketchCanvas.MAIN_BUNDLE,
-                  mode: 'AspectFit',
-                }}
-                onCanvasReady={() => {
-                  console.log('onCanvasReady #2');
-
-                  // debug path #2
-                  testPath1.forEach((path) => {
-                    this.canvas.addPath(path);
-                  });
-                }}
-                // localSourceImage={{ filename: 'bulb.png', directory: RNSketchCanvas.MAIN_BUNDLE }}
-                ref={(ref) => (this.canvas = ref)}
-                style={{ flex: 1 }}
-                strokeColor={this.state.color}
-                strokeWidth={this.state.thickness}
-                onGenerateBase64={(result) => {
-                  console.log('base64 result:', result);
-                }}
-                onStrokeStart={(x, y) => {
-                  console.log('x: ', x, ', y: ', y);
-                  this.setState({ message: 'Start' });
-                }}
-                onStrokeChanged={(x, y) => {
-                  console.log('x: ', x, ', y: ', y);
-                  this.setState({ message: 'Changed' });
-                }}
-                onStrokeEnd={() => {
-                  this.setState({ message: 'End' });
-                }}
-                onPathsChange={(pathsCount) => {
-                  console.log('pathsCount', pathsCount);
-                }}
-              />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity
-                    style={[styles.functionButton, { backgroundColor: 'red' }]}
-                    onPress={() => {
-                      this.setState({ color: '#FF0000' });
-                    }}
-                  >
-                    <Text style={{ color: 'white' }}>Red</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.functionButton,
-                      { backgroundColor: 'black' },
-                    ]}
-                    onPress={() => {
-                      this.setState({ color: '#000000' });
-                    }}
-                  >
-                    <Text style={{ color: 'white' }}>Black</Text>
-                  </TouchableOpacity>
-                </View>
-                <Text style={{ marginRight: 8, fontSize: 20 }}>
-                  {this.state.message}
-                </Text>
-                <TouchableOpacity
-                  style={[
-                    styles.functionButton,
-                    { backgroundColor: 'black', width: 90 },
-                  ]}
-                  onPress={() => {
-                    Alert.alert(JSON.stringify(this.canvas.getPaths()));
-                    this.canvas.getBase64('jpg', false, true, true, true);
-                  }}
-                >
-                  <Text style={{ color: 'white' }}>Get Paths</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+            <SketchContainer strokeColor={"blue"} strokeWidth={2}/>
           </View>
         )}
 

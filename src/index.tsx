@@ -24,10 +24,7 @@ function generateUniqueFilename() {
   return uuid;
 }
 
-export default class RNSketchCanvas extends React.Component<
-  RNSketchCanvasProps,
-  CanvasState
-> {
+class RNSketchCanvas extends React.Component<RNSketchCanvasProps, CanvasState> {
   static defaultProps = {
     containerStyle: null,
     canvasStyle: null,
@@ -346,4 +343,8 @@ RNSketchCanvas.DOCUMENT = SketchCanvas.DOCUMENT;
 RNSketchCanvas.LIBRARY = SketchCanvas.LIBRARY;
 RNSketchCanvas.CACHES = SketchCanvas.CACHES;
 
+// Export both the default RNSketchCanvas and the named exports
+export default RNSketchCanvas;
+export { default as SketchContainer } from './SketchContainer';
+export { default as DrawCanvas } from './DrawCanvas';
 export { SketchCanvas };

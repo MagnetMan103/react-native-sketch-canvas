@@ -2,11 +2,11 @@
   "name": "@magnetman103/react-native-sketch-canvas",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sourcetoad/react-native-sketch-canvas"
+    "url": "https://github.com/magnetman103/react-native-sketch-canvas"
   },
  "publishConfig": { "access": "public" },
-  "version": "2.1.3",
-  "description": "react-native-sketch-canvas allows you to draw / sketch on both iOS and Android devices and sync the drawing data between users. Of course you can save as image.",
+  "version": "2.1.6",
+  "description": "A fork of react native sketch canvas from sourcetoad for modification.",
   "author": "Magnetman103 (forked from Sourcetoad)",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",

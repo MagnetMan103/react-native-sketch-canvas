@@ -2,7 +2,7 @@
 
 import memoize from 'memoize-one';
 import React from 'react';
-import { PixelRatio, Platform, processColor } from 'react-native';
+import { PanResponder, PixelRatio, Platform, processColor } from 'react-native';
 import { requestPermissions } from './handlePermissions';
 import {
   type SketchCanvasProps,
@@ -17,11 +17,6 @@ import ReactNativeSketchCanvasView, {
 } from './specs/SketchCanvasNativeComponent';
 
 import RNSketchModule from './specs/NativeSketchCanvasModule';
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler';
 
 type CanvasState = {
   text: any;
@@ -61,7 +56,7 @@ class SketchCanvas extends React.Component<SketchCanvasProps, CanvasState> {
   _offset: { x: number; y: number };
   _size: { width: number; height: number };
   _initialized: boolean;
-  panGesture: any;
+  panResponder: any;
 
   state = {
     text: null,
@@ -82,19 +77,20 @@ class SketchCanvas extends React.Component<SketchCanvasProps, CanvasState> {
     this._size = { width: 0, height: 0 };
     this._initialized = false;
 
-    // Create the pan gesture using react-native-gesture-handler
-    this.panGesture = Gesture.Pan()
-      .onStart((event) => {
+    this.panResponder = PanResponder.create({
+      // Ask to be the responder:
+      onStartShouldSetPanResponder: (_evt, _gestureState) => true,
+      onStartShouldSetPanResponderCapture: (_evt, _gestureState) => true,
+      onMoveShouldSetPanResponder: (_evt, _gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (_evt, _gestureState) => true,
+
+      onPanResponderGrant: (evt, gestureState) => {
         if (!this.props.touchEnabled) {
           return;
         }
-        if (!event.stylusData) {
-          return;
-        }
-
-        // Calculate offset similar to the previous implementation
-        this._offset = { x: 0, y: 0 }; // We'll adjust this with absoluteX/Y and x/y
-
+        const e = evt.nativeEvent;
+        console.log('NativeEvent: ', e);
+        this._offset = { x: e.pageX - e.locationX, y: e.pageY - e.locationY };
         this._path = {
           id: parseInt(String(Math.random() * 100000000), 10),
           color: this.props.strokeColor,
@@ -110,56 +106,66 @@ class SketchCanvas extends React.Component<SketchCanvasProps, CanvasState> {
             this._path.width ? this._path.width * this._screenScale : 0
           );
 
-          const x = parseFloat(event.x.toFixed(2));
-          const y = parseFloat(event.y.toFixed(2));
-
           Commands.addPoint(
             this.ref.current,
-            parseFloat((x * this._screenScale).toString()),
-            parseFloat((y * this._screenScale).toString())
+            parseFloat(
+              (
+                Number((gestureState.x0 - this._offset.x).toFixed(2)) *
+                this._screenScale
+              ).toString()
+            ),
+            parseFloat(
+              (
+                Number((gestureState.y0 - this._offset.y).toFixed(2)) *
+                this._screenScale
+              ).toString()
+            )
           );
-
-          this._path.data.push(`${x},${y}`);
-          this.props.onStrokeStart?.(x, y);
         }
-      })
-      .onUpdate((event) => {
+
+        const x = parseFloat((gestureState.x0 - this._offset.x).toFixed(2)),
+          y = parseFloat((gestureState.y0 - this._offset.y).toFixed(2));
+        this._path.data.push(`${x},${y}`);
+        this.props.onStrokeStart?.(x, y);
+      },
+      onPanResponderMove: (_evt, gestureState) => {
         if (!this.props.touchEnabled) {
           return;
         }
-        if (!event.stylusData) {
-          return;
-        }
-
         if (this._path && this.ref.current) {
-          const x = parseFloat(event.x.toFixed(2));
-          const y = parseFloat(event.y.toFixed(2));
-
           Commands.addPoint(
             this.ref.current,
-            parseFloat((x * this._screenScale).toString()),
-            parseFloat((y * this._screenScale).toString())
+            parseFloat(
+              (
+                Number((gestureState.moveX - this._offset.x).toFixed(2)) *
+                this._screenScale
+              ).toString()
+            ),
+            parseFloat(
+              (
+                Number((gestureState.moveY - this._offset.y).toFixed(2)) *
+                this._screenScale
+              ).toString()
+            )
           );
-
+          const x = parseFloat(
+              (gestureState.moveX - this._offset.x).toFixed(2)
+            ),
+            y = parseFloat((gestureState.moveY - this._offset.y).toFixed(2));
           this._path.data.push(`${x},${y}`);
           this.props.onStrokeChanged?.(x, y);
         }
-      })
-      .onEnd((event) => {
+      },
+      onPanResponderRelease: (_evt, _gestureState) => {
         if (!this.props.touchEnabled) {
           return;
         }
-        if (!event.stylusData) {
-          return;
-        }
-
         if (this._path) {
           this.props.onStrokeEnd?.({
             path: this._path,
             size: this._size,
             drawer: this.props.user,
           });
-
           this._paths.push({
             path: this._path,
             size: this._size,
@@ -170,9 +176,12 @@ class SketchCanvas extends React.Component<SketchCanvasProps, CanvasState> {
         if (this.ref.current) {
           Commands.endPath(this.ref.current);
         }
-      })
-      .minDistance(1)
-      .runOnJS(true);
+      },
+
+      onShouldBlockNativeResponder: (_evt, _gestureState) => {
+        return true;
+      },
+    });
   }
 
   _processText(text: any) {
@@ -316,47 +325,45 @@ class SketchCanvas extends React.Component<SketchCanvasProps, CanvasState> {
 
   render() {
     return (
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <GestureDetector gesture={this.panGesture}>
-          <ReactNativeSketchCanvasView
-            ref={this.ref}
-            style={this.props.style}
-            onLayout={(e: any) => {
-              this._size = {
-                width: e.nativeEvent.layout.width,
-                height: e.nativeEvent.layout.height,
-              };
-              this._initialized = true;
-              this._pathsToProcess.length > 0 &&
-                this._pathsToProcess.forEach((p) => this.addPath(p));
-            }}
-            onChange={(e: any) => {
-              const { eventType, pathsUpdate, success, path } =
-                e.nativeEvent || {};
+      <ReactNativeSketchCanvasView
+        ref={this.ref}
+        style={this.props.style}
+        onLayout={(e: any) => {
+          this._size = {
+            width: e.nativeEvent.layout.width,
+            height: e.nativeEvent.layout.height,
+          };
+          this._initialized = true;
+          this._pathsToProcess.length > 0 &&
+            this._pathsToProcess.forEach((p) => this.addPath(p));
+        }}
+        {...this.panResponder.panHandlers}
+        onChange={(e: any) => {
+          const { eventType, pathsUpdate, success, path } = e.nativeEvent || {};
 
-              const isSuccess = success !== undefined;
-              const isSave = eventType === OnChangeEventType.Save;
-              const isPathsUpdate = eventType === OnChangeEventType.PathsUpdate;
+          const isSuccess = success !== undefined;
+          const isSave = eventType === OnChangeEventType.Save;
+          const isPathsUpdate = eventType === OnChangeEventType.PathsUpdate;
 
-              if (!isSave && isPathsUpdate) {
-                this.props.onPathsChange?.(pathsUpdate);
-              } else if (isSave) {
-                this.props.onSketchSaved?.(success, path);
-              } else if (isSuccess) {
-                this.props.onSketchSaved?.(success, '');
-              }
-            }}
-            onGenerateBase64={(e: any) => {
-              this.props.onGenerateBase64?.(e.nativeEvent || {});
-            }}
-            onCanvasReady={() => {
-              this.props.onCanvasReady?.();
-            }}
-            localSourceImage={this.props.localSourceImage}
-            text={this.getProcessedText(this.props.text)}
-          />
-        </GestureDetector>
-      </GestureHandlerRootView>
+          if (!isSave && isPathsUpdate) {
+            this.props.onPathsChange?.(pathsUpdate);
+          } else if (isSave) {
+            this.props.onSketchSaved?.(success, path);
+          } else if (isSuccess) {
+            this.props.onSketchSaved?.(success, '');
+          }
+        }}
+        onGenerateBase64={(e: any) => {
+          this.props.onGenerateBase64?.(e.nativeEvent || {});
+        }}
+        onCanvasReady={() => {
+          this.props.onCanvasReady?.();
+        }}
+        localSourceImage={this.props.localSourceImage}
+        permissionDialogTitle={this.props.permissionDialogTitle}
+        permissionDialogMessage={this.props.permissionDialogMessage}
+        text={this.getProcessedText(this.props.text)}
+      />
     );
   }
 }
