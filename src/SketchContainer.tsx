@@ -33,6 +33,7 @@ interface SketchContainerProps {
   onGenerateBase64?: (result: any) => void;
   onCanvasReady?: () => void;
   touchEnabled?: boolean;
+  scrollY?: (y?: number, velocity?: number) => void;
 }
 
 export interface SketchContainerRef {
@@ -73,6 +74,7 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
       onGenerateBase64,
       onCanvasReady,
       touchEnabled,
+      scrollY,
     } = props;
 
     // Use refs instead of state for path data (similar to original implementation)
@@ -91,6 +93,8 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
     const triggerUpdate = () => {
       setForceUpdate((prev) => prev + 1);
     };
+    const lastYAmount = useRef(0);
+
     // Create the pan gesture
     const panGesture = Gesture.Pan()
       .onStart((event) => {
@@ -122,6 +126,11 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
       })
       .onUpdate((event) => {
         if ((!event.stylusData && !touchEnabled) || !currentPathRef.current) {
+          if (scrollY) {
+            // If scrollY is provided, call it with the current scroll position
+            scrollY(lastYAmount.current - event.translationY);
+            lastYAmount.current = event.translationY;
+          }
           return;
         }
 
@@ -142,6 +151,10 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
       })
       .onEnd((event) => {
         if ((!event.stylusData && !touchEnabled) || !currentPathRef.current) {
+          if (scrollY) {
+            scrollY(0, event.velocityY);
+            lastYAmount.current = 0;
+          }
           return;
         }
 

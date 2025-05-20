@@ -17,6 +17,7 @@ import RNSketchCanvas, {
   SketchCanvas,
 } from '@magnetman103/react-native-sketch-canvas';
 import {SketchContainer} from "@magnetman103/react-native-sketch-canvas";
+import ScrollComponent from "../scrollComponent";
 
 type ExampleState = {
   example: number;
@@ -360,9 +361,7 @@ export default class example extends Component<any, ExampleState> {
         )}
 
         {this.state.example === 2 && (
-          <View style={{ flex: 1, flexDirection: 'row' }}>
-            <SketchContainer strokeColor={"blue"} strokeWidth={2}/>
-          </View>
+          <ScrollComponent/>
         )}
 
         {this.state.example === 3 && (

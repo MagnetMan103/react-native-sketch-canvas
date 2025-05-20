@@ -5,7 +5,7 @@
     "url": "https://github.com/magnetman103/react-native-sketch-canvas"
   },
  "publishConfig": { "access": "public" },
-  "version": "2.1.8",
+  "version": "3.0.1",
   "description": "A fork of react native sketch canvas from sourcetoad for modification.",
   "author": "Magnetman103 (forked from Sourcetoad)",
   "source": "./src/index.tsx",
