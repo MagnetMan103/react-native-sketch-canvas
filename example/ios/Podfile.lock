@@ -1530,7 +1530,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNSketchCanvas (2.1.6):
+  - RNSketchCanvas (2.1.8):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1824,7 +1824,7 @@ SPEC CHECKSUMS:
   ReactCodegen: e1c019dc68733dd2c5d3b263b4a6dc72002c0045
   ReactCommon: 81e0744ee33adfd6d586141b927024f488bc49ea
   RNGestureHandler: 8dab066435239ff9f56934a2dae9080734cfec2b
-  RNSketchCanvas: 5ed2bf60f02d35aea74b8b9c34cf8a00aa58e4e8
+  RNSketchCanvas: be5738c9b26b223db5a86607726802e20042bc79
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 90d80701b27946c4b23461c00a7207f300a6ff71
 

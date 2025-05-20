@@ -16,7 +16,7 @@ import {
 import RNSketchCanvas, {
   SketchCanvas,
 } from '@magnetman103/react-native-sketch-canvas';
-import {SketchContainer} from "@magnetman103/react-native-sketch-canvas"
+import {SketchContainer} from "@magnetman103/react-native-sketch-canvas";
 
 type ExampleState = {
   example: number;

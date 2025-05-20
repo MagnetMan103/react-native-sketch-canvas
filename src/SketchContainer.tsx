@@ -32,6 +32,7 @@ interface SketchContainerProps {
   onSketchSaved?: (success: boolean, path: string) => void;
   onGenerateBase64?: (result: any) => void;
   onCanvasReady?: () => void;
+  touchEnabled?: boolean;
 }
 
 export interface SketchContainerRef {
@@ -71,6 +72,7 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
       onSketchSaved,
       onGenerateBase64,
       onCanvasReady,
+      touchEnabled,
     } = props;
 
     // Use refs instead of state for path data (similar to original implementation)
@@ -92,7 +94,7 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
     // Create the pan gesture
     const panGesture = Gesture.Pan()
       .onStart((event) => {
-        if (!event.stylusData) {
+        if (!event.stylusData && !touchEnabled) {
           return;
         }
 
@@ -119,7 +121,7 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
         triggerUpdate(); // Force update to render current path
       })
       .onUpdate((event) => {
-        if (!event.stylusData || !currentPathRef.current) {
+        if ((!event.stylusData && !touchEnabled) || !currentPathRef.current) {
           return;
         }
 
@@ -139,7 +141,7 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
         onStrokeChanged?.(x, y);
       })
       .onEnd((event) => {
-        if (!event.stylusData || !currentPathRef.current) {
+        if ((!event.stylusData && !touchEnabled) || !currentPathRef.current) {
           return;
         }
 
