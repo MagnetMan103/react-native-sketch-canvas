@@ -241,6 +241,16 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
         triggerUpdate();
       }
     };
+    const deletePath = (id: number) => {
+      pathsRef.current = pathsRef.current.filter((p) => p.path.id !== id);
+      pathsToProcessRef.current = pathsToProcessRef.current.filter(
+        (p) => p.path.id !== id
+      );
+      if (canvasRef.current) {
+        canvasRef.current.deletePath(id);
+      }
+      triggerUpdate();
+    };
 
     const save = (
       imageType: string,
@@ -308,6 +318,7 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
       clear,
       undo,
       addPath,
+      deletePath,
       getPaths,
       save,
       getBase64,
