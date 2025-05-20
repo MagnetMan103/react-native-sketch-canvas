@@ -15,7 +15,6 @@ export default function ScrollComponent() {
   };
 
   const scrollY = (y: number = 0, velocity: number = 0) => {
-    console.log(`scrollY: ${y}, velocity: ${velocity}`);
     // scroll the current location by y
     if (scrollRef.current) {
       const newPosition = currentScrollY + y;
