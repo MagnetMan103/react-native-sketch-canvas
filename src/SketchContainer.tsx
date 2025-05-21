@@ -158,7 +158,7 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
         onStrokeChanged?.(x, y);
       })
       .onEnd((event) => {
-        if (eraserOn) {
+        if (eraserOn && (event.stylusData || touchEnabled)) {
           onStrokeEnd?.({
             path: {
               id: -1,
