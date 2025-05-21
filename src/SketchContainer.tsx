@@ -34,6 +34,7 @@ interface SketchContainerProps {
   onCanvasReady?: () => void;
   touchEnabled?: boolean;
   scrollY?: (y?: number, velocity?: number) => void;
+  eraserOn?: boolean;
 }
 
 export interface SketchContainerRef {
@@ -75,6 +76,7 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
       onCanvasReady,
       touchEnabled,
       scrollY,
+      eraserOn,
     } = props;
 
     // Use refs instead of state for path data (similar to original implementation)
@@ -98,7 +100,7 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
     // Create the pan gesture
     const panGesture = Gesture.Pan()
       .onStart((event) => {
-        if (!event.stylusData && !touchEnabled) {
+        if ((!event.stylusData && !touchEnabled) || eraserOn) {
           return;
         }
 
@@ -125,6 +127,13 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
         triggerUpdate(); // Force update to render current path
       })
       .onUpdate((event) => {
+        const x = parseFloat(event.x.toFixed(2));
+        const y = parseFloat(event.y.toFixed(2));
+
+        if (eraserOn) {
+          onStrokeChanged?.(x, y);
+          return;
+        }
         if ((!event.stylusData && !touchEnabled) || !currentPathRef.current) {
           if (scrollY) {
             // If scrollY is provided, call it with the current scroll position
@@ -133,9 +142,6 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
           }
           return;
         }
-
-        const x = parseFloat(event.x.toFixed(2));
-        const y = parseFloat(event.y.toFixed(2));
 
         // Add point to current path
         if (currentPathRef.current) {
@@ -150,6 +156,19 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
         onStrokeChanged?.(x, y);
       })
       .onEnd((event) => {
+        if (eraserOn) {
+          onStrokeEnd?.({
+            path: {
+              id: -1,
+              color: strokeColor,
+              width: strokeWidth,
+              data: [],
+            },
+            size: { width: 0, height: 0 },
+            drawer: null,
+          });
+          return;
+        }
         if ((!event.stylusData && !touchEnabled) || !currentPathRef.current) {
           if (scrollY) {
             scrollY(0, event.velocityY);
