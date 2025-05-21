@@ -130,10 +130,12 @@ const SketchContainer = forwardRef<SketchContainerRef, SketchContainerProps>(
         const x = parseFloat(event.x.toFixed(2));
         const y = parseFloat(event.y.toFixed(2));
 
-        if (eraserOn) {
+        if (eraserOn && (event.stylusData || touchEnabled)) {
+          // only fire if stylus is used and eraser is on
           onStrokeChanged?.(x, y);
           return;
         }
+        // handle case when touch is enabled and eraser is on? (future)
         if ((!event.stylusData && !touchEnabled) || !currentPathRef.current) {
           if (scrollY) {
             // If scrollY is provided, call it with the current scroll position
